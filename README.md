@@ -10,6 +10,8 @@ Sample Request
 > curl http://host/counter-api/search -H"Authorization: Basic b3B0dXM6Y2FuZGlkYXRlcw==" -
 d’{“searchText”:[“Duis”, “Sed”, “Donec”, “Augue”, “Pellentesque”, “123”]}’ -H"Content-
 Type: application/json" –X POST
+
+
 Result in JSON:
 > {"counts": [{"Duis": 11}, {"Sed": 16}, {"Donec": 8}, {"Augue": 7}, {"Pellentesque": 6},
 {"123": 0}]}
@@ -23,7 +25,10 @@ Eg:
 Sample Request
 > curl http://host/counter-api/top/20 -H"Authorization: Basic b3B0dXM6Y2FuZGlkYXRlcw==" -
 H”Accept: text/csv”
-As an example of the result if I put /top/5:
+
+ Example of /top/5:
+
+
 text1|100
 text2|91
 text3|80
@@ -33,6 +38,7 @@ text5|60
 Technologies used :
 
 Apache Maven 3.2.3, Java 6, Tomcat 7.0.12, Spring Framework 4.3.0.RELEASE, Spring Security 4.1.1.RELEASE
+
 Provided paragraph is in the classpath (dataFile.txt)
 
 For building & testing the APIs: 
