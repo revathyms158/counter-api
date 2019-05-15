@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
- * Created by optus on 14/5/19.
+ * Created by revathy.ms on 14/5/19.
  */
 
 @Configuration

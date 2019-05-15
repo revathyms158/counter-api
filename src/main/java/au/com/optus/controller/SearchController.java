@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletResponse;
 
 import au.com.optus.service.SearchService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,9 @@ import au.com.optus.model.SearchResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Created by revathy.ms on 13/5/19.
+ */
 @RestController
 public class SearchController {
 
@@ -38,24 +42,43 @@ public class SearchController {
 
     ObjectMapper mapper = new ObjectMapper();
 
+    private static final Integer TEXT_EMPTY_COUNT = 0;
+
+
+    /**
+     * Rest API to search and retrieve the no.of occurrences of a list of texts.
+     *
+     * @param searchData
+     * @throws IOException
+     */
     @PreAuthorize("hasRole('USER')")
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public void getSearchDataCount(@RequestBody SearchData searchData, HttpServletResponse response) throws IOException {
+    public SearchResult getSearchDataCount(@RequestBody SearchData searchData) throws IOException {
 
         List<HashMap<String, Integer>> resultList = new ArrayList<HashMap<String, Integer>>();
-        HashMap<String, Integer> resultMap;
-        Map<String, Integer> stringTokenMap = searchService.getWordCountMap();
+        if (CollectionUtils.isNotEmpty(searchData.getSearchDataList())) {
 
-        for (String key : searchData.getSearchDataList()) {
-            resultMap = new HashMap<String, Integer>();
-            resultMap.put(key, stringTokenMap.get(key.toLowerCase()));
-            resultList.add(resultMap);
+            HashMap<String, Integer> resultMap;
+            Map<String, Integer> stringTokenMap = searchService.getWordCountMap();
+
+            for (String key : searchData.getSearchDataList()) {
+                resultMap = new HashMap<String, Integer>();
+                int count = stringTokenMap.containsKey(key.toLowerCase()) ? stringTokenMap.get(key.toLowerCase()) : TEXT_EMPTY_COUNT;
+                resultMap.put(key, count);
+                resultList.add(resultMap);
+            }
         }
         searchResult.setCounts(resultList);
-        response.getWriter().write(mapper.writeValueAsString(searchResult));
+        return searchResult;
 
     }
 
+    /**
+     * Rest API to retrieve top 'count'(as Path Variable) no.of Texts and occurrence in csv format
+     *
+     * @param count
+     * @param response
+     */
     @PreAuthorize("hasRole('USER')")
     @RequestMapping(value = "/top/{count}", method = RequestMethod.GET)
     public void getTopCount(@PathVariable("count") int count, HttpServletResponse response) {
@@ -78,6 +101,12 @@ public class SearchController {
 
     }
 
+    /**
+     * Method to sort the map in descending order of value
+     *
+     * @param tokenCountMap
+     * @return Map sorted Map
+     */
     private Map<String, Integer> sortByComparator(Map<String, Integer> tokenCountMap) {
 
         List<Entry<String, Integer>> list = new LinkedList<Entry<String, Integer>>(tokenCountMap.entrySet());

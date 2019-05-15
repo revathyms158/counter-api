@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class SearchServiceImpl implements SearchService {
 
     private static final String FILE_NAME = "dataFile.txt";
     private static Map<String, Integer> textTokenMap;
-    private static  File file;
+    private static File file;
 
     static {
         textTokenMap = new HashMap<String, Integer>();
@@ -28,14 +29,19 @@ public class SearchServiceImpl implements SearchService {
         retrieveCountMap();
     }
 
-    public static void retrieveCountMap(){
+    /**
+     *
+     * Static method to process the file and populate textTokenMap
+     *
+     */
+    private static void retrieveCountMap() {
 
         List<String> wordList;
 
         try {
+            //reading the file line by line and extracting words
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line = br.readLine();
-
             while (line != null) {
                 line = line.replaceAll("[\\.$|,|;]", "");
                 wordList = Arrays.asList(line.split(" "));
@@ -48,23 +54,37 @@ public class SearchServiceImpl implements SearchService {
                     }
                 }
                 line = br.readLine();
+                //Collections.frequency(wordList, key);
+
             }
         } catch (IOException e) {
             System.out.println("inside getStringTokenMap(): IOException occured " + e.getMessage());
         }
     }
 
+    /**
+     * To retrieve the text and count Map
+     *
+     * @return
+     */
     @Override
     public Map getWordCountMap() {
         return textTokenMap;
     }
 
+    /**
+     * To retrieve the top number of text and occurrence from sorted map
+     *
+     * @param sortedMap
+     * @param count
+     * @return
+     */
     @Override
-    public String getTopOrderList(Map<String, Integer> sortedMapDesc, int count) {
+    public String getTopOrderList(Map<String, Integer> sortedMap, int count) {
+
         int i = 0;
         List<DataCountResult> topOrderList = new ArrayList<DataCountResult>();
-
-        for (Map.Entry<String, Integer> entry : sortedMapDesc.entrySet()) {
+        for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
             if (i < count) {
                 DataCountResult countResult = new DataCountResult();
                 countResult.setText(entry.getKey());
@@ -73,6 +93,7 @@ public class SearchServiceImpl implements SearchService {
                 i++;
             }
         }
+
         StringBuilder csvBuilder = new StringBuilder();
         for (DataCountResult dataCount : topOrderList) {
             csvBuilder.append(dataCount.getText());

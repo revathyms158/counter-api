@@ -8,7 +8,19 @@ import java.util.Map;
  */
 public interface SearchService {
 
+    /**
+     * To process the file and retrieve the word and count as a map
+     *
+     * @return
+     */
     Map getWordCountMap();
 
-    String getTopOrderList(Map<String, Integer> sortedMapDesc, int count);
+    /**
+     *To retrieve the top number of text and occurrence from sorted map
+     *
+     * @param sortedMap
+     * @param count
+     * @return
+     */
+    String getTopOrderList(Map<String, Integer> sortedMap, int count);
 }
