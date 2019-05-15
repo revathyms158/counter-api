@@ -1,0 +1,14 @@
+.metadata/
+.git/
+.project
+*.log
+*.iml
+*.launch
+.idea/
+*/pom.xml.versionsBackup
+.classpath
+*/.project
+.settings
+*.versionsBackup
+*.orig
+target/
